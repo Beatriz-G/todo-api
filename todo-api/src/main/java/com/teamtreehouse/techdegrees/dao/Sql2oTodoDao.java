@@ -17,7 +17,7 @@ public class Sql2oTodoDao implements TodoDao {
 
    // Create
     @Override
-    public void create(Todo todo) throws DaoException {
+    public void create(Todo todo)  throws DaoException {
         String sql = "INSERT INTO todos(name, isCompleted) VALUES (:name, :isCompleted)";
 
         try (Connection con = sql2o.open()) {

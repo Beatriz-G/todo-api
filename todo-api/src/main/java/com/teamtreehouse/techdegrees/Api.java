@@ -15,6 +15,8 @@ import static spark.Spark.*;
 public class Api {
 
     public static void main(String[] args) {
+        staticFileLocation("/public");
+
         String datasource = "jdbc:h2:~/reviews.db";
         if (args.length > 0) {
             if (args.length !=2) {

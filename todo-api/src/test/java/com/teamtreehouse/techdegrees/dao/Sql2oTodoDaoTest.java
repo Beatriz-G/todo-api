@@ -2,8 +2,6 @@ package com.teamtreehouse.techdegrees.dao;
 
 import com.teamtreehouse.techdegrees.exc.DaoException;
 import com.teamtreehouse.techdegrees.model.Todo;
-import junit.framework.TestCase;
-import org.eclipse.jetty.util.IO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +33,7 @@ public class Sql2oTodoDaoTest {
     }
 
     @Test
-    public void addingTodoSetsId() throws Exception {
+    public void addingTodosSetsId() throws Exception {
         Todo todo = newTestCourse();
         int originalTodoId = todo.getId();
 
@@ -54,12 +52,12 @@ public class Sql2oTodoDaoTest {
     }
 
     @Test
-    public void noTodosReturnsEmptyList() throws IOException {
+    public void noTodosReturnsEmptyList() throws Exception {
         assertEquals(0, dao.findAll().size());
     }
 
     @Test
-    public void existingTodosCanBeFoundById()  throws IOException, DaoException {
+    public void existingTodoCanBeFoundById()  throws Exception {
         Todo todo = newTestCourse();
 
         dao.create(todo);

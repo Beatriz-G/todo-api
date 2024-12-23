@@ -7,6 +7,7 @@ public class Todo {
     private boolean isCompleted;
 
     // Constructor
+    //changed boolean in isComplete to string for test
     public Todo(String name, boolean isCompleted) {
         this.name = name;
         this.isCompleted = isCompleted;

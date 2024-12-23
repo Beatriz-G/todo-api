@@ -15,9 +15,11 @@ public class Sql2oTodoDao implements TodoDao {
        this.sql2o = sql2o;
    }
 
+   // Create
     @Override
-    public void add(Todo todo) throws DaoException {
-        String sql = "INSERT INTO todo(name, url) VALUES (:name, :ulr)";
+    public void create(Todo todo) throws DaoException {
+        String sql = "INSERT INTO todos(name, isCompleted) VALUES (:name, :isCompleted)";
+
         try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql)
                     .bind(todo)
@@ -25,12 +27,52 @@ public class Sql2oTodoDao implements TodoDao {
                     .getKey();
             todo.setId(id);
         } catch (Sql2oException ex) {
-            throw new DaoException(ex, "Problem adding course");
+            throw new DaoException(ex, "Problem creating course");
+        }
+    }
+
+    // Update
+    @Override
+    public void update(int id, String name, boolean isCompleted) {
+        String sql = "UPDATE todos SET name = :name, isCompleted = :isCompleted WHERE id = :id";
+
+        try(Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", id)
+                    .addParameter("name", name)
+                    .addParameter("isCompleted", isCompleted)
+                    .executeUpdate();
+        }
+    }
+
+    // Delete
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM todos WHERE id = :id";
+
+        try(Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", id)
+                    .executeUpdate();
         }
     }
 
     @Override
+    public Todo findById(int id) {
+        try(Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * from todos WHERE id = :id")
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Todo.class);
+        }
+    }
+
+
+    // findAll
+    @Override
     public List<Todo> findAll() {
-        return List.of();
+        try(Connection con = sql2o.open()) {
+            return con.createQuery("SELECT * FROM todos")
+                    .executeAndFetch(Todo.class);
+        }
     }
 }

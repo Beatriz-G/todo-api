@@ -6,11 +6,9 @@ import com.teamtreehouse.techdegrees.model.Todo;
 import java.util.List;
 
 public interface TodoDao {
-    void add(Todo todo) throws DaoException;
-
+    void create(Todo todo) throws DaoException;
+    void update(int id, String name, boolean isCompleted);
+    void delete(int id);
+    Todo findById(int id);
     List<Todo> findAll();
-
-
-
-
 }

@@ -67,7 +67,7 @@ public class Sql2oTodoDaoTest {
     }
 
     private static Todo newTestCourse() {
-        return new Todo("Test", true);
+        return new Todo("Test", false);
         //http://test.com
     }
 

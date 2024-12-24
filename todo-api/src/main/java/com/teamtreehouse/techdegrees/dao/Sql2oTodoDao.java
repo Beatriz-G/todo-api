@@ -18,16 +18,17 @@ public class Sql2oTodoDao implements TodoDao {
    // Create
     @Override
     public void create(Todo todo)  throws DaoException {
-        String sql = "INSERT INTO todos(name, isCompleted) VALUES (:name, :isCompleted)";
+        String sql = "INSERT INTO todos(name, isCompleted) VALUES(:name, :isCompleted)";
 
         try (Connection con = sql2o.open()) {
             int id = (int) con.createQuery(sql)
-                    .bind(todo)
+                    .addParameter("name", todo.getName())
+                    .addParameter("isCompleted", todo.isCompleted())
                     .executeUpdate()
                     .getKey();
             todo.setId(id);
         } catch (Sql2oException ex) {
-            throw new DaoException(ex, "Problem creating course");
+            throw new DaoException(ex, "Problem creating todo");
         }
     }
 
@@ -60,12 +61,11 @@ public class Sql2oTodoDao implements TodoDao {
     @Override
     public Todo findById(int id) {
         try(Connection con = sql2o.open()) {
-            return con.createQuery("SELECT * from todos WHERE id = :id")
+            return con.createQuery("SELECT * FROM todos WHERE id = :id")
                     .addParameter("id", id)
                     .executeAndFetchFirst(Todo.class);
         }
     }
-
 
     // findAll
     @Override

@@ -58,7 +58,7 @@ public class Api {
             res.type("application/json");
         });
 
-        // PUT route
+        // Put route
         put ("/api/v1/todos/:id", "application/json", (req, res) -> {
            int id = Integer.parseInt(req.params("id"));
            Todo newTodo = gson.fromJson(req.body(), Todo.class);
@@ -100,6 +100,5 @@ public class Api {
             res.status(err.getStatus());
             res.body(gson.toJson(jsonMap));
         }) ;
-
     }
 }

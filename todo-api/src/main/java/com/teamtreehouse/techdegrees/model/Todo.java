@@ -1,13 +1,11 @@
 package com.teamtreehouse.techdegrees.model;
 
-// Implementing Todo Model
 public class Todo {
     private int id;
     private String name;
     private boolean isCompleted;
 
     // Constructor
-    //changed boolean in isComplete to string for test
     public Todo(String name, boolean isCompleted) {
         this.name = name;
         this.isCompleted = isCompleted;

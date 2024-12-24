@@ -1,14 +1,11 @@
 package com.teamtreehouse.techdegrees.dao;
 
-import com.teamtreehouse.techdegrees.exc.DaoException;
 import com.teamtreehouse.techdegrees.model.Todo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
-
-import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -34,7 +31,7 @@ public class Sql2oTodoDaoTest {
 
     @Test
     public void addingTodosSetsId() throws Exception {
-        Todo todo = newTestCourse();
+        Todo todo = newTestTodo();
         int originalTodoId = todo.getId();
 
         dao.create(todo);
@@ -44,7 +41,7 @@ public class Sql2oTodoDaoTest {
 
     @Test
     public void addedTodosAreReturnedFromFindAll() throws Exception{
-        Todo todo = newTestCourse();
+        Todo todo = newTestTodo();
 
         dao.create(todo);
 
@@ -58,7 +55,7 @@ public class Sql2oTodoDaoTest {
 
     @Test
     public void existingTodoCanBeFoundById()  throws Exception {
-        Todo todo = newTestCourse();
+        Todo todo = newTestTodo();
 
         dao.create(todo);
 
@@ -66,11 +63,32 @@ public class Sql2oTodoDaoTest {
         assertEquals(todo, foundTodo);
     }
 
-    private static Todo newTestCourse() {
-        return new Todo("Test", true);
-        //http://test.com
+    @Test
+    public void todoIsUpdatedById() throws Exception {
+        Todo todo = newTestTodo();
+        String originalName = todo.getName();
+        boolean originalStatus = todo.isCompleted();
+
+        dao.create(todo);
+
+        dao.update(todo);
+        Todo update = dao.findById(todo.getId());
+
+        assertNotEquals(originalName, update.getName());
+        assertNotEquals(originalStatus, update.isCompleted());
     }
 
+    @Test
+    public void todoDeletedById() throws Exception {
+        Todo todo = newTestTodo();
 
+        dao.create(todo);
+        dao.delete(todo.getId());
+        assertEquals(0, dao.findAll().size());
+    }
 
+    private static Todo newTestTodo() {
+        return new Todo("Test", true);
+
+    }
 }

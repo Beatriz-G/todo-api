@@ -2,11 +2,9 @@ package com.teamtreehouse.techdegrees;
 
 import com.google.gson.Gson;
 import com.teamtreehouse.techdegrees.dao.Sql2oTodoDao;
-import com.teamtreehouse.techdegrees.dao.Sql2oTodoDaoTest;
 import com.teamtreehouse.techdegrees.model.Todo;
 import com.teamtreehouse.testing.ApiClient;
 import com.teamtreehouse.testing.ApiResponse;
-import junit.framework.TestCase;
 import org.junit.*;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -19,19 +17,17 @@ import static org.junit.Assert.assertEquals;
 
 public class ApiTest  {
 
-    public static final String Port = "4568";
+    public static final String PORT = "4568";
     public static final String TEST_DATASOURCE = "jdbc:h2:mem:testing";
     private Connection conn;
     private ApiClient client;
     private Gson gson;
     private Sql2oTodoDao todoDao;
-    private ApiClient todo;
 
     @BeforeClass
     public static void startServer() {
-        String[] args = {Port, TEST_DATASOURCE};
+        String[] args = {PORT, TEST_DATASOURCE};
         Api.main(args);
-
     }
 
     @AfterClass
@@ -39,13 +35,12 @@ public class ApiTest  {
         Spark.stop();
     }
 
-
     @Before
     public void setUp() throws Exception {
         Sql2o sql2o = new Sql2o(TEST_DATASOURCE + ";INIT=RUNSCRIPT from 'classpath:db/init.sql'", "", "");
         todoDao = new Sql2oTodoDao(sql2o);
         conn = sql2o.open();
-        client = new ApiClient("http://localhost:" + Port);
+        client = new ApiClient("http://localhost:" + PORT);
         gson = new Gson();
     }
 
@@ -58,7 +53,7 @@ public class ApiTest  {
     public void addingTodosReturnsCreatedStatus() throws Exception {
         Map<String, String> values = new HashMap<>();
         values.put("name", "Test");
-        values.put("url", "http://test.com");
+        values.put("isCompleted", "false");
 
         ApiResponse res = client.request("POST", "/api/v1/todos", gson.toJson(values));
 
@@ -68,25 +63,22 @@ public class ApiTest  {
     @Test
     public void todosCanBeAccessedById() throws Exception {
         Todo todo = newTestTodo();
-        todoDao.create(todo );
+        todoDao.create(todo);
 
-        ApiResponse res = client.request("GET",
-                "/api/v1/todos/" + todo.getId());
-        Todo retrieved = gson.fromJson(res.getBody(), Todo.class);
+        ApiResponse res = client.request("GET","/api/v1/todos/" + todo.getId());
 
-        assertEquals(todo, retrieved);
+        Todo foundTodo = todoDao.findById(todo.getId());
+        assertEquals(todo, foundTodo);
     }
 
     @Test
     public void missingTodosReturnNotFoundStatus() throws Exception {
-        ApiResponse res = todo.request("GET", "/api/v1/todos/42");
+        ApiResponse res = client.request("GET", "/api/v1/todos/42");
 
         assertEquals(404, res.getStatus());
     }
 
     private static Todo newTestTodo() {
-        return new Todo("Test", true);
+        return new Todo("Test", false);
     }
-
 }
-

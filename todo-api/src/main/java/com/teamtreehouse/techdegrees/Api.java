@@ -34,6 +34,7 @@ public class Api {
         TodoDao todoDao = new Sql2oTodoDao(sql2o);
         Gson gson = new Gson();
 
+        // Route
         post("/api/v1/todos", "application/json", (req, res) -> {
             Todo todo = gson.fromJson(req.body(), Todo.class);
             todoDao.create(todo);
@@ -57,6 +58,25 @@ public class Api {
             res.type("application/json");
         });
 
+        // PUT route
+        put ("/api/v1/todos/:id", "application/json", (req, res) -> {
+           int id = Integer.parseInt(req.params("id"));
+           Todo newTodo = gson.fromJson(req.body(), Todo.class);
+
+           Todo currentTodo = todoDao.findById(id);
+           if (currentTodo == null) {
+               res.status(404);
+               return gson.toJson("Not found");
+           }
+
+           currentTodo.setName(newTodo.getName());
+           currentTodo.setCompleted(newTodo.isCompleted());
+           todoDao.update(currentTodo);
+           res.status(200);
+           return currentTodo;
+        }, gson::toJson);
+
+        // Route to delete
         delete("/api/v1/todos/:id", "application/json", (req, res) -> {
            int id = Integer.parseInt(req.params("id"));
            Todo todo = todoDao.findById(id);
@@ -71,8 +91,6 @@ public class Api {
            }
         });
 
-       
-
         exception(ApiError.class, (exc, req, res) -> {
             ApiError err = (ApiError) exc;
             Map<String, Object> jsonMap = new HashMap<>();
@@ -84,5 +102,4 @@ public class Api {
         }) ;
 
     }
-
 }

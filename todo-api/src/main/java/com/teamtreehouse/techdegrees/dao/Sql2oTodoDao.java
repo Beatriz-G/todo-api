@@ -32,20 +32,6 @@ public class Sql2oTodoDao implements TodoDao {
         }
     }
 
-    // Update
-    @Override
-    public void update(int id, String name, boolean isCompleted) {
-        String sql = "UPDATE todos SET name = :name, isCompleted = :isCompleted WHERE id = :id";
-
-        try(Connection con = sql2o.open()) {
-            con.createQuery(sql)
-                    .addParameter("id", id)
-                    .addParameter("name", name)
-                    .addParameter("isCompleted", isCompleted)
-                    .executeUpdate();
-        }
-    }
-
     // Delete
     @Override
     public void delete(int id) {
@@ -58,6 +44,7 @@ public class Sql2oTodoDao implements TodoDao {
         }
     }
 
+    // Find by Id
     @Override
     public Todo findById(int id) {
         try(Connection con = sql2o.open()) {
@@ -73,6 +60,20 @@ public class Sql2oTodoDao implements TodoDao {
         try(Connection con = sql2o.open()) {
             return con.createQuery("SELECT * FROM todos")
                     .executeAndFetch(Todo.class);
+        }
+    }
+
+    // Update
+    @Override
+    public void update(Todo todo) {
+        String sql = "UPDATE todos SET name = :name, isCompleted = :isCompleted WHERE id = :id";
+
+        try(Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", todo.getId())
+                    .addParameter("name", todo.getName())
+                    .addParameter("isCompleted", todo.isCompleted())
+                    .executeUpdate();
         }
     }
 }

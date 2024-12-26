@@ -15,6 +15,7 @@ import static spark.Spark.*;
 public class Api {
 
     public static void main(String[] args) {
+     
         staticFileLocation("/public");
 
         String datasource = "jdbc:h2:~/todos.db";
@@ -92,7 +93,8 @@ public class Api {
         });
 
         exception(ApiError.class, (exc, req, res) -> {
-            ApiError err = (ApiError) exc;
+            ApiError err;
+            err = (ApiError) exc;
             Map<String, Object> jsonMap = new HashMap<>();
             jsonMap.put("status", err.getStatus());
             jsonMap.put("errorMessage", err.getMessage());

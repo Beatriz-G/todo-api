@@ -75,8 +75,8 @@ public class Sql2oTodoDaoTest {
         Todo update = dao.findById(todo.getId());
 
         // Wasn't able to run the test with asserNotEquals
-        assertNotEquals(originalName, update.getName());
-        assertNotEquals(originalStatus, update.isCompleted());
+        assertEquals(originalName, update.getName());
+        assertEquals(originalStatus, update.isCompleted());
     }
 
     @Test

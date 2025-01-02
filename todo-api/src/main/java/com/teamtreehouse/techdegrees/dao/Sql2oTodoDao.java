@@ -32,6 +32,20 @@ public class Sql2oTodoDao implements TodoDao {
         }
     }
 
+    // Update
+    @Override
+    public void update(Todo todo) {
+        String sql = "UPDATE todos SET name = :name, isCompleted = :isCompleted WHERE id = :id";
+
+        try(Connection con = sql2o.open()) {
+            con.createQuery(sql)
+                    .addParameter("id", todo.getId())
+                    .addParameter("name", todo.getName())
+                    .addParameter("isCompleted", todo.isCompleted())
+                    .executeUpdate();
+        }
+    }
+
     // Delete
     @Override
     public void delete(int id) {
@@ -44,16 +58,6 @@ public class Sql2oTodoDao implements TodoDao {
         }
     }
 
-    // Find by Id
-    @Override
-    public Todo findById(int id) {
-        try(Connection con = sql2o.open()) {
-            return con.createQuery("SELECT * FROM todos WHERE id = :id")
-                    .addParameter("id", id)
-                    .executeAndFetchFirst(Todo.class);
-        }
-    }
-
     // findAll
     @Override
     public List<Todo> findAll() {
@@ -63,17 +67,13 @@ public class Sql2oTodoDao implements TodoDao {
         }
     }
 
-    // Update
+    // Find by ID
     @Override
-    public void update(Todo todo) {
-        String sql = "UPDATE todos SET name = :name, isCompleted = :isCompleted WHERE id = :id";
-
+    public Todo findById(int id) {
         try(Connection con = sql2o.open()) {
-            con.createQuery(sql)
-                    .addParameter("id", todo.getId())
-                    .addParameter("name", todo.getName())
-                    .addParameter("isCompleted", todo.isCompleted())
-                    .executeUpdate();
+            return con.createQuery("SELECT * FROM todos WHERE id = :id")
+                    .addParameter("id", id)
+                    .executeAndFetchFirst(Todo.class);
         }
     }
 }
